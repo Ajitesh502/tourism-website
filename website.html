@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historic Castle Tours - Experience Medieval Grandeur</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Aboreto&family=Darker+Grotesque:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="http://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <script src="script.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--ivory);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            border: 20px solid transparent;
+            border-image: url('https://www.transparenttextures.com/patterns/arabesque.png') 30 round;
+            padding: 20px;
+        }
+
+        @keyframes backgroundSlideshow {
+            0% {
+                background-image: url('background.jpg');
+            }
+            50% {
+                background-image: url('background1.jpg');
+            }
+            100% {
+                background-image: url('background.jpg');
+            }
+        }
+
+        #video-background {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2;
+            object-fit: cover;
+            filter: brightness(0.8);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Modern Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--rich-brown), var(--deep-maroon));
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border-bottom: 3px solid var(--royal-gold);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-menu-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .nav-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: #c9a959;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: linear-gradient(135deg, var(--rich-brown), var(--deep-maroon));
+            border: 2px solid var(--royal-gold);
+            padding: 1rem;
+            min-width: 200px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-dropdown:hover .nav-dropdown-list {
+            display: block;
+        }
+
+        .nav-dropdown-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--ivory);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-dropdown-link:hover {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--royal-gold);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #c9a959;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .brand img {
+            height: 30px;
+        }
+
+        /* Mobile Navigation */
+        .menu-button {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .menu-button {
+                display: block;
+            }
+
+            .nav-menu-wrapper {
+                display: none;
+            }
+
+            .nav-menu-wrapper.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(43, 35, 25, 0.95);
+                padding: 1rem;
+            }
+        }
+
+        /* Hero Section Enhancement */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 2rem;
+            z-index: 1;
+        }
+
+        .hero-content {
+            background: linear-gradient(135deg, rgba(101, 67, 33, 0.95), rgba(128, 0, 0, 0.95));
+            padding: 3rem;
+            border: 3px solid var(--royal-gold);
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .hero-content::before,
+        .hero-content::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #c9a959;
+        }
+
+        .hero-content::before {
+            top: 10px;
+            left: 10px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .hero-content::after {
+            bottom: 10px;
+            right: 10px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #c9a959;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            font-family: 'Cormorant Garamond', serif;
+            margin-bottom: 2rem;
+        }
+
+        /* Enhanced Search Box */
+        .search-box {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .search-box input {
+            padding: 1rem 1.5rem;
+            width: 300px;
+            border: 2px solid #c9a959;
+            background-color: rgba(43, 35, 25, 0.7);
+            color: #e9e2d0;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+        }
+
+        .search-box button {
+            padding: 1rem 2rem;
+            background: #c9a959;
+            color: #2b2319;
+            border: none;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: #a88c3d;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Sections */
+        section {
+            padding: 5rem 2rem;
+            position: relative;
+            z-index: 1;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(101, 67, 33, 0.95), rgba(128, 0, 0, 0.95));
+            padding: 3rem;
+            border: 3px solid var(--royal-gold);
+            position: relative;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .section-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #c9a959;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, rgba(101, 67, 33, 0.95), rgba(128, 0, 0, 0.95));
+            padding: 2rem;
+            border: 2px solid var(--royal-gold);
+            transition: all 0.3s ease;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .service-card i {
+            font-size: 2.5rem;
+            color: #c9a959;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            color: #c9a959;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* Footer Enhancement */
+        footer {
+            background: linear-gradient(135deg, var(--rich-brown), var(--deep-maroon));
+            padding: 3rem 2rem;
+            border-top: 3px solid var(--royal-gold);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #c9a959;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #e9e2d0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #c9a959;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--royal-gold);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+
+        .social-links a:hover {
+            color: var(--ivory);
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+        }
+
+        /* Image Slider/Carousel Styles */
+        .fort-showcase {
+            padding: 5rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slider-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(43, 35, 25, 0.9);
+            padding: 3rem;
+            border: 2px solid #c9a959;
+        }
+
+        .fort-slider {
+            position: relative;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .fort-slide {
+            position: relative;
+            display: none;
+        }
+
+        .fort-slide.active {
+            display: block;
+        }
+
+        .fort-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border: 3px solid #c9a959;
+        }
+
+        .fort-info {
+            padding: 1rem;
+            background: rgba(43, 35, 25, 0.8);
+            border: 1px solid #c9a959;
+        }
+
+        .fort-info h3 {
+            font-size: 2rem;
+            color: #c9a959;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .fort-info p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .slider-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .slider-btn {
+            padding: 0.5rem 1rem;
+            background: #c9a959;
+            color: #2b2319;
+            border: none;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .slider-btn:hover {
+            background: #a88c3d;
+            transform: translateY(-2px);
+        }
+
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: #c9a959;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .dot.active {
+            opacity: 1;
+        }
+
+        /* Rajputana Theme Enhancements */
+        :root {
+            --royal-gold: #D4AF37;
+            --deep-maroon: #800000;
+            --royal-red: #8B0000;
+            --sand-color: #D2B48C;
+            --royal-purple: #4B0082;
+            --royal-blue: #000080;
+            --ivory: #F5F5DC;
+            --rich-brown: #654321;
+            --regal-orange: #D2691E;
+        }
+
+        /* Decorative Border Style */
+        .rajput-border {
+            position: relative;
+            padding: 2rem;
+            border: 3px solid var(--royal-gold);
+            background: linear-gradient(135deg, rgba(101, 67, 33, 0.95), rgba(128, 0, 0, 0.95));
+        }
+
+        .rajput-border::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border: 2px solid var(--royal-gold);
+            z-index: -1;
+            background: url('https://www.transparenttextures.com/patterns/arabesque.png');
+            opacity: 0.3;
+        }
+
+        .rajput-border::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 1px solid var(--royal-gold);
+            z-index: -2;
+            background: url('https://www.transparenttextures.com/patterns/diamond-upholstery.png');
+            opacity: 0.2;
+        }
+
+        /* Rajput Warriors Section */
+        .warriors-section {
+            padding: 5rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .warrior-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .warrior-card {
+            background: linear-gradient(135deg, rgba(101, 67, 33, 0.95), rgba(128, 0, 0, 0.95));
+            border: 3px solid var(--royal-gold);
+            background: rgba(43, 35, 25, 0.9);
+            border: 2px solid #c9a959;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .warrior-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--royal-gold), var(--deep-maroon), var(--royal-gold));
+        }
+
+        .warrior-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .warrior-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 3px solid #c9a959;
+            margin: 0 auto 1.5rem;
+            object-fit: cover;
+            display: block;
+        }
+
+        .warrior-title {
+            color: var(--royal-gold);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .warrior-subtitle {
+            color: var(--sand-color);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        /* Historical Timeline */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 3rem auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: var(--royal-gold);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background: var(--royal-gold);
+            border: 4px solid var(--deep-maroon);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            left: 50%;
+        }
+
+        .right::after {
+            left: -16px;
+        }
+
+        .timeline-content {
+            padding: 20px 30px;
+            background: linear-gradient(135deg, rgba(101, 67, 33, 0.95), rgba(128, 0, 0, 0.95));
+            border: 2px solid var(--royal-gold);
+            position: relative;
+            border-radius: 6px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Different background images for different sections */
+        #about .section-container::before {
+            background-image: url('amber fort.jpg');
+        }
+
+        #services .section-container::before {
+            background-image: url('golconda fort.jpg');
+        }
+
+        .warriors-section .section-container::before {
+            background-image: url('gwalior fort.jpg');
+        }
+
+        /* Weather and Map Section */
+        .weather-map-section {
+            background: rgba(43, 35, 25, 0.85);
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            border: 2px solid #c9a959;
+            position: relative;
+        }
+
+        .weather-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .weather-card {
+            background: rgba(43, 35, 25, 0.9);
+            padding: 2rem;
+            border: 1px solid #c9a959;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .weather-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #c9a959;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #c9a959;
+            margin-top: 2rem;
+        }
+
+        .search-location {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-location input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #c9a959;
+            background: rgba(43, 35, 25, 0.7);
+            color: #e9e2d0;
+            font-family: 'Cinzel', serif;
+        }
+
+        .search-location button {
+            padding: 1rem 2rem;
+            background: #c9a959;
+            color: #2b2319;
+            border: none;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .search-location button:hover {
+            background: #a88c3d;
+            transform: translateY(-2px);
+        }
+
+        /* Video Section Styles */
+        .video-section {
+            padding: 5rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .video-card {
+            background: linear-gradient(135deg, rgba(101, 67, 33, 0.95), rgba(128, 0, 0, 0.95));
+            border: 3px solid var(--royal-gold);
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border: 2px solid var(--royal-gold);
+            border-radius: 4px;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-card h3 {
+            color: var(--royal-gold);
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .video-card p {
+            color: var(--ivory);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuButton = document.querySelector('.menu-button');
+            const navMenu = document.querySelector('.nav-menu-wrapper');
+            
+            menuButton.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                menuButton.classList.toggle('active');
+            });
+
+            // Dropdown functionality
+            const dropdownToggles = document.querySelectorAll('.nav-dropdown-toggle');
+            
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    if (this.parentElement.classList.contains('nav-dropdown')) {
+                        e.preventDefault();
+                        const dropdown = this.parentElement;
+                        const isActive = dropdown.classList.contains('active');
+                        
+                        // Close all other dropdowns
+                        document.querySelectorAll('.nav-dropdown.active').forEach(d => {
+                            if (d !== dropdown) {
+                                d.classList.remove('active');
+                            }
+                        });
+                        
+                        // Toggle current dropdown
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.nav-dropdown')) {
+                    document.querySelectorAll('.nav-dropdown.active').forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                    });
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 992) {
+                    navMenu.classList.remove('active');
+                    menuButton.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand">
+                <img src="logo.jpg" alt="Castle Tours Logo">
+                Castle Tours
+            </a>
+            
+            <button class="menu-button">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="nav-menu-wrapper">
+                <div class="nav-dropdown">
+                    <div class="nav-dropdown-toggle">
+                        Tours
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="nav-dropdown-list">
+                        <a href="#" class="nav-dropdown-link">Day Tours</a>
+                        <a href="#" class="nav-dropdown-link">Multi-Day Tours</a>
+                        <a href="#" class="nav-dropdown-link">Private Tours</a>
+                        <a href="#" class="nav-dropdown-link">Group Tours</a>
+                    </div>
+                </div>
+
+                <div class="nav-dropdown">
+                    <div class="nav-dropdown-toggle">
+                        Destinations
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="nav-dropdown-list">
+                        <a href="#" class="nav-dropdown-link">Rajasthan</a>
+                        <a href="#" class="nav-dropdown-link">Maharashtra</a>
+                        <a href="#" class="nav-dropdown-link">Karnataka</a>
+                        <a href="#" class="nav-dropdown-link">Tamil Nadu</a>
+                    </div>
+                </div>
+
+                <a href="#" class="nav-dropdown-toggle">About</a>
+                <a href="#" class="nav-dropdown-toggle">Contact</a>
+                <a href="#" class="nav-dropdown-toggle">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Historic Castle Tours</h1>
+            <p>Journey Through Time: Experience the Grandeur of Medieval Architecture</p>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search for a castle...">
+                <button onclick="searchLocation()">
+                    <i class="fas fa-search"></i> Explore
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="section-container">
+            <h2>Our Heritage</h2>
+            <p>Step back in time with our expertly guided tours through centuries-old castles. We specialize in immersive historical experiences that bring the medieval era to life, allowing you to walk the same halls as kings, queens, and knights of old.</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-crown"></i>
+                    <h3>Royal Experience</h3>
+                    <p>Experience life as royalty in authentic medieval settings</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-history"></i>
+                    <h3>Rich History</h3>
+                    <p>Discover centuries of fascinating historical tales and legends</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-camera"></i>
+                    <h3>Scenic Views</h3>
+                    <p>Capture breathtaking views from ancient castle battlements</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="section-container">
+            <h2>Our Tour Offerings</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-castle"></i>
+                    <h3>Royal Castle Tours</h3>
+                    <p>Experience exclusive access to royal chambers, hidden passages, and private collections within Europe's most magnificent castles and palaces.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Medieval Banquet Events</h3>
+                    <p>Immerse yourself in history with our authentic medieval feasts, complete with period entertainment, costume options, and traditional cuisine.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Guided Historical Expeditions</h3>
+                    <p>Join our historian-led expeditions exploring multiple castles across regions, uncovering the strategic importance and architectural evolution of these magnificent structures.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="fort-showcase">
+        <div class="slider-container">
+            <h2>Majestic Forts of India</h2>
+            <div class="fort-slider">
+                <div class="fort-slide active">
+                    <img src="chittorgarh.jpg" alt="Chittorgarh Fort" class="fort-image">
+                    <div class="fort-info">
+                        <h3>Chittorgarh Fort</h3>
+                        <p>The largest fort in India, Chittorgarh Fort is a UNESCO World Heritage site that exemplifies Rajput architecture and valor. Spread over 700 acres, this magnificent structure stands atop a 180m high hill and features stunning palaces, temples, and towers.</p>
+                    </div>
+                </div>
+
+                <div class="fort-slide">
+                    <img src="amber fort.jpg" alt="Amber Fort" class="fort-image">
+                    <div class="fort-info">
+                        <h3>Amber Fort</h3>
+                        <p>Located in Jaipur, the Amber Fort is known for its artistic Hindu style elements with its large ramparts, series of gates and cobbled paths. The fort overlooks Maota Lake and is constructed of red sandstone and marble.</p>
+                    </div>
+                </div>
+
+                <div class="fort-slide">
+                    <img src="golconda fort.jpg" alt="Golconda Fort" class="fort-image">
+                    <div class="fort-info">
+                        <h3>Golconda Fort</h3>
+                        <p>Golconda Fort is a massive fortress whose ruins stand proudly on a 400-foot-high hill. It was the capital of the medieval sultanate of the Qutb Shahi dynasty and is famous for its acoustic effects and the legendary Koh-i-Noor diamond.</p>
+                    </div>
+                </div>
+
+                <div class="fort-slide">
+                    <img src="gwalior fort.jpg" alt="Gwalior Fort" class="fort-image">
+                    <div class="fort-info">
+                        <h3>Gwalior Fort</h3>
+                        <p>Known as the 'Gibraltar of India', Gwalior Fort is an architectural marvel that has witnessed numerous battles and changes of power. The fort complex contains beautiful palaces, temples, and water tanks, showcasing a blend of Hindu and Islamic architecture.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-buttons">
+                <button class="slider-btn" onclick="changeSlide(-1)">Previous</button>
+                <button class="slider-btn" onclick="changeSlide(1)">Next</button>
+            </div>
+            <div class="dots-container">
+                <span class="dot active" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
+            </div>
+        </div>
+    </section>
+
+    <section class="warriors-section">
+        <div class="section-container rajput-border">
+            <h2>Legendary Indian Warriors & Kings</h2>
+            <div class="warrior-grid">
+                <div class="warrior-card">
+                    <img src="maharana pratap.jpg" alt="Maharana Pratap" class="warrior-image">
+                    <h3 class="warrior-title">Maharana Pratap</h3>
+                    <p class="warrior-subtitle">The Lion of Mewar (1540-1597)</p>
+                    <p>Known for his fierce resistance against the Mughal Empire and the historic Battle of Haldighati. His legendary horse Chetak became a symbol of Rajput valor.</p>
+                </div>
+
+                <div class="warrior-card">
+                    <img src="shivaji.jpg" alt="Chhatrapati Shivaji" class="warrior-image">
+                    <h3 class="warrior-title">Chhatrapati Shivaji</h3>
+                    <p class="warrior-subtitle">Founder of Maratha Empire (1630-1680)</p>
+                    <p>Known for establishing a competent and progressive civil rule with well-structured administrative organizations. He revived ancient Hindu political traditions and court conventions.</p>
+                </div>
+
+                <div class="warrior-card">
+                    <img src="raja raja chola.jpg" alt="Raja Raja Chola I" class="warrior-image">
+                    <h3 class="warrior-title">Raja Raja Chola I</h3>
+                    <p class="warrior-subtitle">The Great Chola Emperor (985-1014 CE)</p>
+                    <p>One of the greatest kings of the Chola Empire, known for his military conquests and architectural achievements, including the construction of the Brihadeeswarar Temple.</p>
+                </div>
+
+                <div class="warrior-card">
+                    <img src="rajendra chola 1.jpg" alt="Rajendra Chola I" class="warrior-image">
+                    <h3 class="warrior-title">Rajendra Chola I</h3>
+                    <p class="warrior-subtitle">The Naval Emperor (1014-1044 CE)</p>
+                    <p>Extended the Chola Empire to its greatest extent, including overseas territories. Known for his naval expeditions and the construction of a new capital city.</p>
+                </div>
+
+                <div class="warrior-card">
+                    <img src="bajirao.jpg" alt="Peshwa Bajirao I" class="warrior-image">
+                    <h3 class="warrior-title">Peshwa Bajirao I</h3>
+                    <p class="warrior-subtitle">The Great Maratha General (1700-1740)</p>
+                    <p>One of the greatest military commanders in Indian history, known for his military tactics and expanding the Maratha Empire to its greatest extent.</p>
+                </div>
+
+                <div class="warrior-card">
+                    <img src="rana sangha.jpg" alt="Rana Sanga" class="warrior-image">
+                    <h3 class="warrior-title">Rana Sanga</h3>
+                    <p class="warrior-subtitle">The Lion of Mewar (1482-1528)</p>
+                    <p>One of the most powerful Rajput rulers, known for his military campaigns and resistance against the Mughal Empire. He united various Rajput clans and established Mewar as a dominant power in northern India.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-container rajput-border" style="margin-top: 4rem;">
+            <h2>Great Indian Dynasties</h2>
+            <div class="timeline">
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <h3>Chola Dynasty (300 BCE–1279 CE)</h3>
+                        <p>One of the longest-ruling dynasties in world history. Known for their architectural marvels, naval power, and cultural achievements.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <h3>Rajput Era (7th-20th century)</h3>
+                        <p>Known for their martial valor, architectural splendor, and resistance against foreign invasions. Built magnificent forts and palaces.</p>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <h3>Maratha Empire (1674-1818)</h3>
+                        <p>Founded by Shivaji, reached its zenith under the Peshwas. Known for their guerrilla warfare tactics and naval prowess.</p>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <h3>Ahom Kingdom (1228-1826)</h3>
+                        <p>Ruled Assam for 600 years, successfully resisted Mughal expansion. Known for their unique architecture and military innovations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-container rajput-border" style="margin-top: 4rem;">
+            <h2>Military Heritage & Architecture</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-anchor"></i>
+                    <h3>Naval Excellence</h3>
+                    <p>From the Chola's maritime dominance to Shivaji's sea forts, discover India's rich naval heritage and maritime trading empire.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-horse"></i>
+                    <h3>Cavalry Tactics</h3>
+                    <p>Learn about the lightning-fast cavalry movements of the Marathas and the mounted warfare techniques of Rajput warriors.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-fort-awesome"></i>
+                    <h3>Fortress Architecture</h3>
+                    <p>Explore the unique architectural styles of different dynasties, from Rajput hill forts to Maratha sea fortresses and Chola temples.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container rajput-border" style="margin: 4rem auto;">
+        <h2>Rajput Heritage & Culture</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-crown"></i>
+                <h3>Royal Traditions</h3>
+                <p>Discover the rich traditions of Rajput courts, including the sacred ceremonies, royal customs, and ancient rituals that have been preserved for centuries.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Military Heritage</h3>
+                <p>Learn about the legendary Rajput warfare techniques, weapons, and the code of honor that made them one of history's most formidable warrior clans.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-palette"></i>
+                <h3>Art & Architecture</h3>
+                <p>Explore the magnificent palaces, intricate paintings, and detailed sculptures that showcase the artistic excellence of Rajput craftsmen.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <p>Subscribe to receive updates about new tours and special offers.</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <p>&copy; 2025 Historic Castle Tours. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function searchLocation() {
+            const location = document.getElementById("search-input").value;
+            if (location) {
+                window.location.href = `search-result.html?location=${encodeURIComponent(location)}`;
+            } else {
+                alert("Please enter a castle name to search!");
+            }
+        }
+
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function changeSlide(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("fort-slide");
+            let dots = document.getElementsByClassName("dot");
+            
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            
+            slides[slideIndex-1].style.display = "block";
+            dots[slideIndex-1].className += " active";
+        }
+
+        // Auto-advance slides every 5 seconds
+        setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+
+        // Function to check if images are loading
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.getElementsByTagName('img');
+            for(let img of images) {
+                img.onerror = function() {
+                    console.log('Failed to load image:', img.src);
+                    // Fallback background color if image fails to load
+                    this.style.background = '#2b2319';
+                };
+            }
+        });
+    </script>
+</body>
+</html>

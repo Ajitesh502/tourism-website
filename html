@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Awesome Website</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Basic Layout */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navigation Bar */
+        header {
+            background-color: #333;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        .hero img {
+            width: 100%;
+            height: auto;
+            opacity: 0.7;
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-text h1 {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .hero-text p {
+            font-size: 24px;
+        }
+
+        .cta-btn {
+            padding: 10px 20px;
+            background-color: #f1c40f;
+            color: #333;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .cta-btn:hover {
+            background-color: #e67e22;
+        }
+
+        /* About Section */
+        #about {
+            padding: 50px 20px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        #about h2 {
+            font-size: 36px;
+        }
+
+        /* Services Section */
+        #services {
+            padding: 50px 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        #services h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .services-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .service-box {
+            background-color: #ecf0f1;
+            padding: 20px;
+            width: 30%;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .service-box h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .service-box p {
+            font-size: 16px;
+        }
+
+        /* Footer Section */
+        footer {
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+        }
+
+        footer a {
+            color: #f1c40f;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home">
+        <div class="hero">
+            <img src="C:\Users\hp\Downloads/photo.jpg" alt="Beautiful Landscape">
+            <div class="hero-text">
+                <h1>Welcome to My Website</h1>
+                <p>Your journey starts here!</p>
+                <a href="#about" class="cta-btn">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>We are a team dedicated to bringing you the best content on the web.</p>
+    </section>
+
+    <section id="services">
+        <h2>Our Services</h2>
+        <div class="services-container">
+            <div class="service-box">
+                <h3>Service 1</h3>
+                <p>Description of service 1.</p>
+            </div>
+            <div class="service-box">
+                <h3>Service 2</h3>
+                <p>Description of service 2.</p>
+            </div>
+            <div class="service-box">
+                <h3>Service 3</h3>
+                <p>Description of service 3.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>Contact Us at: <a href="mailto:info@website.com">info@website.com</a></p>
+        <p>&copy; 2025 My Awesome Website</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
